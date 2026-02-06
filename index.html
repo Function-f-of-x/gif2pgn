@@ -13,22 +13,31 @@
   </div>
 
   <div class="container">
-    <h1>GIF → PGN Конвертер</h1>
+    <h1 data-lang-ru="GIF → PGN Конвертер" data-lang-en="GIF → PGN Converter">GIF → PGN Конвертер</h1>
 
-    <div class="theme-toggle-wrapper">
-      <label class="theme-switch">
-        <input type="checkbox" id="themeToggle">
-        <span class="slider"></span>
-      </label>
+    <div class="controls-wrapper">
+      <div class="theme-toggle-wrapper">
+        <label class="theme-switch">
+          <input type="checkbox" id="themeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="language-toggle-wrapper">
+        <select id="languageToggle" class="lang-selector">
+          <option value="ru">RU</option>
+          <option value="en">EN</option>
+        </select>
+      </div>
     </div>
 
     <div class="file-upload-wrapper">
-      <button class="file-upload-button">Выбрать GIF</button>
+      <button class="file-upload-button" data-lang-ru="Выбрать GIF" data-lang-en="Choose GIF">Выбрать GIF</button>
       <input type="file" id="gifInput" class="file-upload-input" accept="image/gif">
     </div>
-    <div id="filename">Файл не выбран</div>
+    <div id="filename" data-lang-ru="Файл не выбран" data-lang-en="No file selected">Файл не выбран</div>
 
-    <button id="convertBtn" class="action-btn">Конвертировать</button>
+    <button id="convertBtn" class="action-btn" data-lang-ru="Конвертировать" data-lang-en="Convert">Конвертировать</button>
 
     <div class="progress">
       <div id="progressBar" class="progress-bar"></div>
@@ -36,18 +45,18 @@
 
     <pre id="output"></pre>
 
-    <a id="download" class="download-btn"></a>
+    <a id="download" class="download-btn" data-lang-ru="Скачать PGN" data-lang-en="Download PGN">Скачать PGN</a>
 
     <div class="documentation">
-      <h2>Инструкция по использованию сайта</h2>
+      <h2 data-lang-ru="Инструкция по использованию сайта" data-lang-en="How to use the site">Инструкция по использованию сайта</h2>
       <ol>
-        <li>Нажмите на кнопку «Выбрать GIF» и загрузите любую гифку размера 8x8 пикселей.</li>
-        <li>Нажмите на кнопку «Конвертировать» для начала конвертации.</li>
-        <li>После заполнения прогресс-бара появится кнопка «Скачать PGN».</li>
-        <li>Перейдите на <a href="https://www.chess.com/analysis" target="_blank">доску анализа Chess.com</a>.</li>
-        <li>Нажмите на «Загрузить файл» в «Загрузить из FEN/PGN» и загрузите отконвертированный файл.</li>
-        <li>Нажмите на «Добавить одну или несколько партий».</li>
-        <li>Просмотрите вашу анимацию прямо на шахматной доске.</li>
+        <li data-lang-ru="Нажмите на кнопку «Выбрать GIF» и загрузите любую гифку размера 8x8 пикселей." data-lang-en="Click on the 'Choose GIF' button and upload any 8x8 pixel GIF.">Нажмите на кнопку «Выбрать GIF» и загрузите любую гифку размера 8x8 пикселей.</li>
+        <li data-lang-ru="Нажмите на кнопку «Конвертировать» для начала конвертации." data-lang-en="Click on the 'Convert' button to start conversion.">Нажмите на кнопку «Конвертировать» для начала конвертации.</li>
+        <li data-lang-ru="После заполнения прогресс-бара появится кнопка «Скачать PGN»." data-lang-en="After the progress bar fills, the 'Download PGN' button will appear.">После заполнения прогресс-бара появится кнопка «Скачать PGN».</li>
+        <li data-lang-ru="Перейдите на <a href='https://www.chess.com/analysis' target='_blank'>доску анализа Chess.com</a>" data-lang-en="Go to the <a href='https://www.chess.com/analysis' target='_blank'>Chess.com analysis board</a>">Перейдите на <a href="https://www.chess.com/analysis" target="_blank">доску анализа Chess.com</a></li>
+        <li data-lang-ru="Нажмите на «Загрузить файл» в «Загрузить из FEN/PGN» и загрузите отконвертированный файл." data-lang-en="Click on 'Upload file' in 'Upload from FEN/PGN' and upload the converted file.">Нажмите на «Загрузить файл» в «Загрузить из FEN/PGN» и загрузите отконвертированный файл.</li>
+        <li data-lang-ru="Нажмите на «Добавить одну или несколько партий»." data-lang-en="Click on 'Add one or more games'.">Нажмите на «Добавить одну или несколько партий».</li>
+        <li data-lang-ru="Просмотрите вашу анимацию прямо на шахматной доске." data-lang-en="View your animation directly on the chessboard.">Просмотрите вашу анимацию прямо на шахматной доске.</li>
       </ol>
     </div>
   </div>
@@ -64,15 +73,50 @@
       if(file){
         nameDiv.textContent = file.name;
       } else {
-        nameDiv.textContent = "Файл не выбран";
+        nameDiv.textContent = document.documentElement.lang === 'en' ? 'No file selected' : 'Файл не выбран';
       }
     });
 
-    const toggle = document.getElementById('themeToggle');
-    toggle.addEventListener('change', () => {
-      document.body.classList.toggle('dark');
-      document.body.classList.toggle('light');
+    const themeToggle = document.getElementById('themeToggle');
+    const languageToggle = document.getElementById('languageToggle');
+    
+    // Load saved settings
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const savedLanguage = localStorage.getItem('language') || 'ru';
+      
+      document.body.className = savedTheme;
+      themeToggle.checked = savedTheme === 'light';
+      languageToggle.value = savedLanguage;
+      document.documentElement.lang = savedLanguage;
+      updateLanguage(savedLanguage);
     });
+
+    themeToggle.addEventListener('change', () => {
+      const newTheme = themeToggle.checked ? 'light' : 'dark';
+      document.body.className = newTheme;
+      localStorage.setItem('theme', newTheme);
+    });
+
+    languageToggle.addEventListener('change', () => {
+      const selectedLang = languageToggle.value;
+      document.documentElement.lang = selectedLang;
+      localStorage.setItem('language', selectedLang);
+      updateLanguage(selectedLang);
+    });
+
+    function updateLanguage(lang) {
+      const elements = document.querySelectorAll('[data-lang-ru][data-lang-en]');
+      elements.forEach(element => {
+        const text = element.getAttribute(`data-lang-${lang}`);
+        // Check if the text contains HTML tags
+        if (text.includes('<a ') && text.includes('</a>')) {
+          element.innerHTML = text;
+        } else {
+          element.textContent = text;
+        }
+      });
+    }
   </script>
 </body>
 </html>

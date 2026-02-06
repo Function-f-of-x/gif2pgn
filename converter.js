@@ -23,6 +23,28 @@ function hex(array_images, frame, x, y) {
   return `#${data[0].toString(16).padStart(2,'0').toUpperCase()}${data[1].toString(16).padStart(2,'0').toUpperCase()}${data[2].toString(16).padStart(2,'0').toUpperCase()}`;
 }
 
+// Function to get translated messages
+function getMessage(key, lang = document.documentElement.lang || 'ru') {
+  const messages = {
+    'ru': {
+      'noFileSelected': 'Выберите GIF!',
+      'wrongSize': 'GIF имеет размер {w}x{h}, нужен 8x8',
+      'downloadText': 'Скачать PGN'
+    },
+    'en': {
+      'noFileSelected': 'Please select a GIF!',
+      'wrongSize': 'GIF size is {w}x{h}, but 8x8 is required',
+      'downloadText': 'Download PGN'
+    }
+  };
+  
+  let message = messages[lang]?.[key] || messages['ru'][key];
+  if (message && message.includes('{w}') && array_images && array_images[0]) {
+    message = message.replace('{w}', array_images[0].width).replace('{h}', array_images[0].height);
+  }
+  return message;
+}
+
 async function gifToArray(file) {
   const buffer = await file.arrayBuffer();
   const gifReader = new window.GifReader(new Uint8Array(buffer));
@@ -60,7 +82,10 @@ async function gifToArray(file) {
 
 document.getElementById("convertBtn").onclick = async function() {
   const file = document.getElementById("gifInput").files[0];
-  if (!file) { alert("Выберите GIF!"); return; }
+  if (!file) { 
+    alert(getMessage('noFileSelected')); 
+    return; 
+  }
 
   const output = document.getElementById("output");
   const downloadBtn = document.getElementById("download");
@@ -74,7 +99,7 @@ document.getElementById("convertBtn").onclick = async function() {
   await gifToArray(file);
 
   if (array_images[0].width !== 8 || array_images[0].height !== 8) {
-    alert(`GIF имеет размер ${array_images[0].width}x${array_images[0].height}, нужен 8x8`);
+    alert(getMessage('wrongSize'));
     return;
   }
 
@@ -104,6 +129,6 @@ document.getElementById("convertBtn").onclick = async function() {
   const blob = new Blob([pgn], {type: "text/plain"});
   downloadBtn.href = URL.createObjectURL(blob);
   downloadBtn.download = file.name.replace(/\.gif$/i, ".pgn");
-  downloadBtn.textContent = "Скачать PGN";
+  downloadBtn.textContent = getMessage('downloadText');
   downloadBtn.classList.add('show');
 };

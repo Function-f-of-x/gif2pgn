@@ -200,3 +200,26 @@ body.light .documentation h2 { color: #222; }
   background: linear-gradient(40deg, #ff0080, #ff8c00 70%);
   box-shadow: none;
 }
+
+.controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.lang-selector {
+  padding: 5px 10px;
+  border-radius: 15px;
+  border: none;
+  background: #2c2c2c;
+  color: #e0e0e0;
+  font-size: 0.9em;
+  cursor: pointer;
+  outline: none;
+}
+
+body.light .lang-selector {
+  background: #ddd;
+  color: #222;
+}
