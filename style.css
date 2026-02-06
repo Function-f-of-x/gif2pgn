@@ -146,10 +146,6 @@ body.light .documentation h2 { color: #222; }
 .documentation a:hover { color: #2575fc; }
 
 .theme-toggle-wrapper {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 1000;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -202,24 +198,152 @@ body.light .documentation h2 { color: #222; }
 }
 
 .controls-wrapper {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
 }
 
-.lang-selector {
-  padding: 5px 10px;
-  border-radius: 15px;
-  border: none;
-  background: #2c2c2c;
+/* Custom Select */
+.custom-select {
+  position: relative;
+  font-size: 1em;
   color: #e0e0e0;
-  font-size: 0.9em;
   cursor: pointer;
-  outline: none;
+  width: 70px; /* Adjust width as needed */
+  text-align: center;
+  --arrow-shift-x: 3px; /* Adjust horizontal position of arrow */
+  --arrow-shift-y: 2px; /* Adjust vertical position of arrow */
 }
 
-body.light .lang-selector {
-  background: #ddd;
+.custom-select .select-selected {
+  background-color: #2c2c2c;
+  padding: 8px 15px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* Add this line to center the text */
+}
+
+/* small visual nudge for the text so it doesn't visually collide with the arrow */
+.custom-select .select-text {
+  display: inline-block;
+  transform: translate(-5px, -1px); /* shift left 6px and up 3px — adjust if needed */
+}
+
+.custom-select .select-selected:after {
+  position: absolute;
+  content: "";
+  top: calc(14px + var(--arrow-shift-y));
+  right: calc(10px + var(--arrow-shift-x));
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #e0e0e0 transparent transparent transparent;
+}
+
+.custom-select .select-selected.select-arrow-active:after {
+  border-color: transparent transparent #e0e0e0 transparent;
+  top: calc(7px + var(--arrow-shift-y));
+}
+
+.custom-select .select-items {
+  position: absolute;
+  background-color: #2c2c2c;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.custom-select .select-items.select-hide {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.custom-select .select-items.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.custom-select .select-items div {
+  padding: 8px 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-select .select-items div:last-child {
+  border-bottom: none;
+}
+
+.custom-select .select-items div:hover,
+.custom-select .select-items .same-as-selected {
+  background-color: #3a3a3a;
+}
+
+/* Light theme styles */
+body.light .custom-select .select-selected {
+  background-color: #eee;
   color: #222;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+body.light .custom-select .select-selected:after {
+  border-color: #222 transparent transparent transparent;
+}
+
+body.light .custom-select .select-selected.select-arrow-active:after {
+  border-color: transparent transparent #222 transparent;
+}
+
+body.light .custom-select .select-items {
+  background-color: #eee;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+body.light .custom-select .select-items div {
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  color: #222;
+}
+
+body.light .custom-select .select-items div:hover,
+body.light .custom-select .select-items .same-as-selected {
+  background-color: #e0e0e0;
+}
+
+.lang-selector option {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  padding: 8px 15px;
+}
+
+.lang-selector option:hover {
+  background-color: #3a3a3a;
+}
+
+body.light .lang-selector option {
+  background-color: #eee;
+  color: #222;
+}
+
+body.light .lang-selector option:hover {
+  background-color: #e0e0e0;
 }
